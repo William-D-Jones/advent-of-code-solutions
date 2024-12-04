@@ -1,8 +1,4 @@
 import sys
-import math
-from copy import deepcopy
-from collections import defaultdict
-import re
 
 # parsing
 X = [ l.strip() for l in open(sys.argv[1], 'r') ]
