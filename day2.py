@@ -1,8 +1,4 @@
 import sys
-import math
-from copy import deepcopy
-from collections import defaultdict
-import re
 
 # parsing
 X = [ l.strip() for l in open(sys.argv[1], 'r') ]
@@ -29,14 +25,11 @@ print(ans)
 # part 2
 ans = 0
 for report in R:
-    if issafe(report):
-        ans += 1
-    else:
-        for i in range(len(report)):
-            keep = list(range(0, i)) + list(range(i+1, len(report)))
-            report_drop = [report[j] for j in keep]
-            if issafe(report_drop):
-                ans += 1
-                break
+    for i in range(len(report)):
+        keep = list(range(0, i)) + list(range(i+1, len(report)))
+        report_drop = [report[j] for j in keep]
+        if issafe(report_drop):
+            ans += 1
+            break
 print(ans)
 
