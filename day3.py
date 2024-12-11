@@ -1,7 +1,4 @@
 import sys
-import math
-from copy import deepcopy
-from collections import defaultdict
 import re
 
 # parsing

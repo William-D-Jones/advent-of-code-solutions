@@ -5,8 +5,9 @@ from copy import deepcopy
 from collections import defaultdict
 import re
 
+DICT_RIGHT = {'^': '>', '>': 'v', 'v': '<', '<': '^'}
+
 def move_guard(guard_map, guard_coord, guard_dir):
-    dict_right = {'^': '>', '>': 'v', 'v': '<', '<': '^'}
     # establish new coordinate
     if guard_dir == '^':
         new_coord = (guard_coord[0] - 1, guard_coord[1])
@@ -25,7 +26,7 @@ def move_guard(guard_map, guard_coord, guard_dir):
     else:
         # establish new direction
         if guard_map[new_coord[0]][new_coord[1]] == '#':
-            return guard_coord, dict_right[guard_dir]
+            return guard_coord, DICT_RIGHT[guard_dir]
         else:
             return new_coord, guard_dir
 
