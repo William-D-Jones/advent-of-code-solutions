@@ -41,8 +41,8 @@ print(ans1)
 
 # part 2
 Pos = deepcopy(Pos_Start)
-nsec = 100000000
-for sec in range(1, nsec+1):
+neighbor_max = 0
+for sec in range(1, nrow * ncol):
     Pic = [[' ' for c in range(ncol)] for r in range(nrow)]
     for i in range(len(Pos)):
         assert 0 <= Pos[i][0] < ncol
@@ -50,18 +50,20 @@ for sec in range(1, nsec+1):
         Pos[i][0] = (Pos[i][0] + Vel[i][0] * 1) % ncol
         Pos[i][1] = (Pos[i][1] + Vel[i][1] * 1) % nrow
         Pic[Pos[i][1]][Pos[i][0]] = '#'
-    A = 0
-    for r in range(nrow):
-        X = []
-        for pos in Pos:
-            if pos[1] == r:
-                X.append(pos[0])
-        X = sorted(X)
-        if len(X) >= 6:
-            A += X[-3] - X[2]
-    if A == 379:
+    # to find the Christmas tree, identify robots with direct neighbors
+    neighbor_score = 0
+    Pos_Checked = deepcopy(Pos)
+    while Pos_Checked:
+        pos = Pos_Checked.pop()
+        Neighbors = [[pos[0]-1, pos[1]], [pos[0]+1, pos[1]],\
+        [pos[0], pos[1]-1], [pos[0], pos[1]+1]]
+        for neighbor in Neighbors:
+            if neighbor in Pos_Checked:
+                neighbor_score += 1
+    if neighbor_score > 500:
+        neighbor_max = neighbor_score
         print('The number of seconds that have elapsed is: ',sec)
-        print('The area score is: ',A)
+        print('The neighbor score is: ',neighbor_max)
         print('\n'.join([''.join(line) for line in Pic]))
         break
 
