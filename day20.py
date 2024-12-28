@@ -1,7 +1,5 @@
 import sys
-import math
-from collections import defaultdict, Counter
-import re
+from collections import Counter
 from copy import deepcopy
 
 # parsing
