@@ -12,10 +12,10 @@ iOPS = {value:key for key,value in OPS.items()}
 def get_key_pair(pad, start, end):
     """
     Get the key-presses required to journey on PAD from the START character
-    to the END character.
+    to the END character and press it.
     """
     if start == end:
-        return 'A'
+        return [ 'A' ]
     for r,row in enumerate(pad):
         for c,char in enumerate(row):
             if char == start:
@@ -44,20 +44,10 @@ def get_key_pair(pad, start, end):
     else:
         return [ keyrc ]
 
-print('We are on: A>')
-print(get_key_pair(KDIR, 'A', '>'))
-print(get_key_pair(KDIR, '>', 'A'))
-print('We are on: A^')
-print(get_key_pair(KDIR, 'A', '^'))
-print(get_key_pair(KDIR, '^', 'A'))
-print('We are on: A<')
-print(get_key_pair(KDIR, 'A', '<'))
-print(get_key_pair(KDIR, '<', 'A'))
-print('We are on: Av')
-print(get_key_pair(KDIR, 'A', 'v'))
-print(get_key_pair(KDIR, 'v', 'A'))
-
-sys.exit('We are done')
+#for char1 in 'A<>^v':
+#    for char2 in 'A<>^v':
+#        print(char1+char2+': ', get_key_pair(KDIR, char1, char2))
+#sys.exit('We are done')
 
 def get_key_sequence(pad, sequence):
     for i in range(len(sequence)):
@@ -65,7 +55,36 @@ def get_key_sequence(pad, sequence):
             Keys = get_key_pair(pad, 'A', sequence[i])
         else:
             Keys_New = get_key_pair(pad, sequence[i-1], sequence[i])
-            Keys = [prefix+suffix for suffix in Keys_New for prefix in Keys]
+            # determine which of Keys_New is the best
+            # case 1: Keys_New contains only one element, use it
+            if len(Keys_New) == 1:
+                Keys = [ Keys[0] + Keys_New[0] ]
+            else:
+                # need to resolve ambiguities based on the beginning character
+                # v vs. <
+                if ( Keys_New[0].startswith('v') and \
+                Keys_New[1].startswith('<') ) \
+                or ( Keys_New[1].startswith('v') and \
+                Keys_New[0].startswith('<') ):
+                    Keys = [ Keys[0] + ( Keys_New[0] \
+                    if Keys_New[0].startswith('v') else Keys_New[1] ) ]
+                # ^ vs. <
+                elif ( Keys_New[0].startswith('^') and \
+                Keys_New[1].startswith('<') ) \
+                or ( Keys_New[1].startswith('^') and \
+                Keys_New[0].startswith('<') ):
+                    Keys = [ Keys[0] + ( Keys_New[0] \
+                    if Keys_New[0].startswith('^') else Keys_New[1] ) ]
+                # v vs. >
+                elif ( Keys_New[0].startswith('v') and 
+                Keys_New[1].startswith('>') ) \
+                or ( Keys_New[1].startswith('v') and \
+                Keys_New[0].startswith('>') ):
+                    Keys = [ Keys[0] + ( Keys_New[0] \
+                    if Keys_New[0].startswith('>') else Keys_New[1] ) ]
+                else:
+                    Keys = [prefix+suffix for suffix in Keys_New for prefix in Keys]
+                    #Keys = [ Keys[0] + Keys_New[0] ]   
     return Keys
 
 def extract_min_len(items):
@@ -81,12 +100,13 @@ X = [l.strip() for l in open(sys.argv[1], 'r')]
 
 # part 1
 ans1 = 0
-ndir = 3
+ndir = 2
 for x in X:
     # get the sequence to be inputted on the first directional keypad
     Keys = extract_min_len(get_key_sequence(KNUM, x))
     print('We are on the numerical robot')
     print('The number of keys is: ',len(Keys))
+    print(Keys[0:10])
     for i in range(ndir):
         print('We are on directional robot: ',i)
         Keys_Next = []
