@@ -1,4 +1,6 @@
-X = [ l.strip() for l in open('input-2023-1.txt', 'r') ]
+import sys
+
+X = [ l.strip() for l in open(sys.argv[1], 'r') ]
 
 r = '0123456789'
 R = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
