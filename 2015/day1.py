@@ -1,5 +1,6 @@
 import sys
 
+# parsing
 X = [ l.strip() for l in open(sys.argv[1], 'r') ][0]
 
 # part 1

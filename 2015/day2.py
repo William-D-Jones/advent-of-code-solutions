@@ -1,8 +1,7 @@
 import sys
 
-X = [ l.strip() for l in open(sys.argv[1], 'r') ]
-
 # parsing
+X = [ l.strip() for l in open(sys.argv[1], 'r') ]
 Dim = []
 for x in X:
     l, w, h = map(int, x.split('x'))
