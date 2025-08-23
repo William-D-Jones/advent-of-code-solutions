@@ -1,6 +1,7 @@
+import sys
 import copy
 
-X = [ l for l in open('input-2022-5.txt', 'r') ]
+X = [ l for l in open(sys.argv[1], 'r') ]
 
 # initial parsing
 div = 0

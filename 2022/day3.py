@@ -1,4 +1,6 @@
-X = [ l.strip() for l in open('input-2022-3.txt', 'r') ]
+import sys
+
+X = [ l.strip() for l in open(sys.argv[1], 'r') ]
 
 sl = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 pl = range(1, 53)

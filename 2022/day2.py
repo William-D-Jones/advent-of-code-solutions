@@ -1,4 +1,6 @@
-X = [ l.strip() for l in open('input-2022-2.txt', 'r') ]
+import sys
+
+X = [ l.strip() for l in open(sys.argv[1], 'r') ]
 
 d_win = { 'R': 'P', 'P': 'S', 'S': 'R' }
 d_lose = { 'R': 'S', 'P': 'R', 'S': 'P' }
