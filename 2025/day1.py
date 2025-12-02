@@ -8,6 +8,7 @@ Inst = [(x[0], int(x[1:])) for x in X]
 ans1 = 0
 pnt = 50
 dial = 100
+tar = 0
 for dx, n in Inst:
     if dx == 'L':
         pnt = (pnt-n) % dial
@@ -15,7 +16,7 @@ for dx, n in Inst:
         pnt = (pnt+n) % dial
     else:
         assert False
-    if pnt == 0:
+    if pnt == tar:
         ans1 += 1
 print(ans1)
 
@@ -23,17 +24,18 @@ print(ans1)
 ans2 = 0
 pnt = 50
 dial = 100
+tar = 0
 for dx, n in Inst:
     if dx == 'L':
-        for _ in range(n):
-            pnt = (pnt-1) % dial
-            if pnt == 0:
-                ans2 += 1
+        n2tar = pnt-tar if pnt > tar else dial-tar+pnt
+        if n >= n2tar:
+            ans2 += 1 + (n-n2tar) // dial
+        pnt = (pnt-n) % dial
     elif dx == 'R':
-        for _ in range(n):
-            pnt = (pnt+1) % dial
-            if pnt == 0:
-                ans2 += 1
+        n2tar = tar-pnt if pnt < tar else dial-pnt+tar
+        if n >= n2tar:
+            ans2 += 1 + (n-n2tar) // dial
+        pnt = (pnt+n) % dial
     else:
         assert False
 print(ans2)
