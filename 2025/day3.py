@@ -2,9 +2,6 @@ import sys
 
 # parsing
 X = [list(map(int, l.strip())) for l in open(sys.argv[1], 'r')]
-nrow = len(X)
-ncol = len(X[0])
-assert all( len(row)==ncol for row in X )
 
 # part 1
 ans1 = 0
