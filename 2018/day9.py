@@ -5,7 +5,7 @@ def play(nm):
     C = {0: (0,0)} # each marble id returns (previous_marble,next_marble)
     Score = [0] * np
     pl = 0 # the current player
-    pnt = 0 # the pointer, set to the current marble at the end of each iteration
+    pnt = 0 # pointer, set to the current marble at the end of each iteration
     m = 1 # the new marble
     while m <= nm:
         if m % 23 != 0:
