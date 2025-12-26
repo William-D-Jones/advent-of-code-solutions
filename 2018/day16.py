@@ -2,7 +2,7 @@ import sys
 import re
 from collections import deque
 
-CODE = ['addr', 'addi', 'mulr', 'muli', 'banr', 'bani', 'barr', 'bari', \
+CODE = ['addr', 'addi', 'mulr', 'muli', 'banr', 'bani', 'borr', 'bori', \
 'setr', 'seti', 'gtir', 'gtri', 'gtrr', 'eqir', 'eqri', 'eqrr']
 
 def ex(Op, Reg):
@@ -19,9 +19,9 @@ def ex(Op, Reg):
         Reg[C] = Reg[A] & Reg[B]
     elif op == 'bani':
         Reg[C] = Reg[A] & B
-    elif op == 'barr':
+    elif op == 'borr':
         Reg[C] = Reg[A] | Reg[B]
-    elif op == 'bari':
+    elif op == 'bori':
         Reg[C] = Reg[A] | B
     elif op == 'setr':
         Reg[C] = Reg[A]
