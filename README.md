@@ -18,7 +18,7 @@ git clone https://github.com/William-D-Jones/advent-of-code-solutions.git
 ## Usage:
 
 Each Python program accepts a single command-line input, which is the name
-of the file containing the days input. For example, run 2024 day 1 with:
+of the file containing the day's input. For example, run 2024 day 1 with:
 
 ```
 python3 2024/day1.py 2024/input-2024-1.txt
