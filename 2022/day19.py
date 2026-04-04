@@ -7,43 +7,36 @@ def get_max_geode(Mv, Start, max_time):
     max_geode = 0
     Seen = {Start: 0}
     Q = []
-    heapq.heappush( Q, (max_time, Start) )
-    tot_check = 0
-    tot_finish = 0
-    tot_prune = 0
-    tot_none = 0
-    tot_stop = 0
-    tot_seen = 0
+    heapq.heappush( Q, (max_time, Start, tuple()) )
+    # We can produce at most one robot per turn. For each resource, determine
+    # the maximum number of that resource needed to buy any robot, and 
+    # produce no more than this number of robots for that resource.
+    Max_Rob = tuple(\
+    -min(Z) for Z in zip(*tuple(Move_Res for Move_Res, Move_Rob in Mv)))
     while Q:
-        tot_check += 1
-        time_left, State = heapq.heappop(Q)
-        time = max_time - time_left
-        #if tot_check % 1000000 == 0:
-        #    print('checked',tot_check,'with time',time,'max',max_geode)
+        time_left, State, Block = heapq.heappop(Q)
         # get the new time
-        time_next = time + 1
-        if time_next > max_time:
-            tot_finish += 1
-            continue
+        time_next = time_left - 1
         # parse the state
         State_Res = [state[0] for state in State]
         State_Rob = [state[1] for state in State]
         # check if sufficient time remains to beat the maximum geode count
         if max_geode >= State_Res[0] + \
         (2 * State_Rob[0] + time_left - 1) * (time_left) // 2:
-            tot_prune += 1
             continue
         # try all possible moves
         buy = True
-        tot_mv = 0
+        Block_Next = []
         for ix_move, (Move_Res, Move_Rob) in enumerate(Mv):
-            # check if the move is valid
-            State_Res_Move = tuple(sum(Z) for Z in zip(State_Res, Move_Res))
-            if any(z < 0 for z in State_Res_Move):
-                if all(state_rob > 0 for \
-                mv_res, state_rob in zip(Move_Res, State_Rob) if \
-                mv_res != 0):
-                    buy = False
+            if ix_move in Block:
+                continue
+            if ix_move <= 0 and time_next <= 3:
+                continue
+            elif ix_move <= 1 and time_next <= 2:
+                continue
+            elif ix_move <= 2 and time_next <= 1:
+                continue
+            elif ix_move <= 3 and time_next <= 0:
                 continue
             # In general, we should always make a move if one is available.
             # However, all moves consume the common resource, ore. Therefore, it
@@ -52,28 +45,36 @@ def get_max_geode(Mv, Start, max_time):
             # to make a different purchase and (ii) we have insufficient 
             # resources to make that purchase.
             if ix_move == len(Mv)-1 and buy:
-                tot_none += 1
                 continue
+            # check if the move is valid
+            State_Res_Move = tuple(sum(Z) for Z in zip(State_Res, Move_Res))
+            if any(z < 0 for z in State_Res_Move):
+                if buy and all(state_rob > 0 for \
+                mv_res, state_rob in zip(Move_Res, State_Rob) if \
+                mv_res != 0):
+                    buy = False
+                continue
+            if ix_move != len(Mv)-1:
+                Block_Next.append(ix_move)
             # get the new state of resources
             State_Res_Next = \
             tuple(sum(Z) for Z in zip(State_Res_Move, State_Rob))
             # get the new state of robots
             State_Rob_Next = tuple(sum(Z) for Z in zip(State_Rob, Move_Rob))
+            if any(state_rob > max_rob for \
+            state_rob, max_rob in zip(State_Rob_Next[1:], Max_Rob[1:])):
+                continue
             # get the new final state
             State_Next = tuple(zip(State_Res_Next, State_Rob_Next))
-            if State_Next not in Seen or Seen[State_Next] > time_next:
+            if State_Next not in Seen or Seen[State_Next] < time_next:
                 Seen[State_Next] = time_next
-                heapq.heappush(Q, (max_time - time_next, State_Next))
-                max_geode = max(max_geode, State_Next[0][0])
-                tot_mv += 1
-            else:
-                tot_seen += 1
-        if tot_mv == 0:
-            tot_stop += 1
-    print('Considered',tot_check,'states.')
-    print('Of these,',tot_finish,'finished and',tot_prune,'were pruned and',tot_stop,'had no valid move.')
-    print('No move condition was skipped',tot_none,'times.')
-    print('States seen were',tot_seen)
+                max_geode = max(max_geode, \
+                State_Next[0][0] + time_next * State_Next[0][1])
+                if ix_move == len(Mv)-1:
+                    heapq.heappush(Q, \
+                    (time_next, State_Next, tuple(Block_Next)))
+                else:
+                    heapq.heappush(Q, (time_next, State_Next, tuple()))
     return max_geode
 
 # parsing
@@ -169,18 +170,16 @@ S = tuple( (0, 1) if res == cmn else (0, 0) for res in P )
 # part 1
 ans1 = 0
 for ix in Move.keys():
-    max_geode = get_max_geode(Move[ix], S, 24)
-    print(ix, max_geode)
+    max_geode = get_max_geode(tuple(Move[ix]), S, 24)
     ans1 += ix * max_geode
 print(ans1)
 
 # part 2
-#ans2 = 1
-#for ix in Move.keys():
-#    if not 1 <= ix <= 3:
-#        continue
-#    max_geode = get_max_geode(Move[ix], S, 32)
-#    print(ix, max_geode)
-#    ans2 *= max_geode
-#print(ans2)
+ans2 = 1
+for ix in Move.keys():
+    if not 1 <= ix <= 3:
+        continue
+    max_geode = get_max_geode(Move[ix], S, 32)
+    ans2 *= max_geode
+print(ans2)
 
