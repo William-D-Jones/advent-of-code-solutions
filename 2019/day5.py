@@ -18,7 +18,7 @@ def intcode(P, ii):
         op = inst - (inst // 100) * 100
         inst //= 100
         # execute the instruction
-        if op == 1:
+        if op == 1: # addition
             jmp = 4
             res = 0
             Mode = get_mode(inst, jmp)
@@ -32,7 +32,7 @@ def intcode(P, ii):
                 else:
                     assert False
             P[P[pnt+jmp-1]] = res
-        elif op == 2:
+        elif op == 2: # multiplication
             jmp = 4
             res = 1
             Mode = get_mode(inst, jmp)
@@ -46,12 +46,12 @@ def intcode(P, ii):
                 else:
                     assert False
             P[P[pnt+jmp-1]] = res
-        elif op == 3:
+        elif op == 3: # input
             jmp = 2
             Mode = get_mode(inst, jmp)
             assert Mode[-1] == 0
             P[P[pnt+1]] = ii
-        elif op == 4:
+        elif op == 4: # output
             jmp = 2
             Mode = get_mode(inst, jmp)
             mode = Mode[-1]
@@ -62,7 +62,7 @@ def intcode(P, ii):
             else:
                 assert False
             Out.append(out)
-        elif op == 5:
+        elif op == 5: # jump if true
             jmp = 3
             Mode = get_mode(inst, jmp)
             if Mode[0] == 0:
@@ -81,7 +81,7 @@ def intcode(P, ii):
                 jmp = 0
             else:
                 pass
-        elif op == 6:
+        elif op == 6: # jump if false
             jmp = 3
             Mode = get_mode(inst, jmp)
             if Mode[0] == 0:
@@ -100,7 +100,7 @@ def intcode(P, ii):
                 jmp = 0
             else:
                 pass
-        elif op == 7:
+        elif op == 7: # is less than
             jmp = 4
             Mode = get_mode(inst, jmp)
             assert Mode[-1] == 0
@@ -114,7 +114,7 @@ def intcode(P, ii):
                 else:
                     assert False
             P[P[pnt+jmp-1]] = 1 * (Chk[0] < Chk[1])
-        elif op == 8:
+        elif op == 8: # is equal to
             jmp = 4
             Mode = get_mode(inst, jmp)
             assert Mode[-1] == 0
@@ -128,7 +128,7 @@ def intcode(P, ii):
                 else:
                     assert False
             P[P[pnt+jmp-1]] = 1 * (Chk[0] == Chk[1])
-        elif op == 99:
+        elif op == 99: # halt
             jmp = 1
             break
         else:
